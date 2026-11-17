@@ -9,6 +9,6 @@ public class GameWindow extends JFrame {
         setResizable(false);
         add(new GamePanel());
         pack();
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null)
     }
 }
