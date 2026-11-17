@@ -14,7 +14,7 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel {
     private final World world = new World();
-    private final Player player = new Player(64, 300);
+    private final Player player = new Player(64, 280);
     private boolean movingLeft;
     private boolean movingRight;
     private boolean jumpPressed;
@@ -33,14 +33,40 @@ public class GamePanel extends JPanel {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics.create();
         world.draw(graphics2D);
+
+        for (Enemy enemy : world.getEnemies()) {
+            enemy.draw(graphics2D);
+        }
+        for (Projectile projectile : world.getProjectiles()) {
+            projectile.draw(graphics2D);
+        }
+
         player.draw(graphics2D);
+        drawHud(graphics2D);
         graphics2D.dispose();
     }
 
     private void updateGame() {
-        player.update(world, movingLeft, movingRight, jumpPressed);
+        if (!world.isLevelComplete()) {
+            player.update(world, movingLeft, movingRight, jumpPressed);
+            world.update(player);
+        }
         jumpPressed = false;
         repaint();
+    }
+
+    private void drawHud(Graphics2D graphics) {
+        graphics.setColor(new Color(255, 255, 255, 180));
+        graphics.drawString("Sleep meter", 18, 20);
+        graphics.setColor(new Color(55, 58, 65));
+        graphics.fillRect(18, 26, 150, 12);
+        graphics.setColor(new Color(59, 130, 246));
+        graphics.fillRect(18, 26, 150, 12);
+
+        if (world.isLevelComplete()) {
+            graphics.setColor(new Color(255, 255, 255, 220));
+            graphics.drawString("Goal reached: The gate opens. Max has reached Death.", 18, 48);
+        }
     }
 
     private void setupControls() {
